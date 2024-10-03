@@ -19,6 +19,8 @@ export const useCompetencyUnits = () => {
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isViewLoading, setIsViewLoading] = useState(false);
   const [isEditLoading, setIsEditLoading] = useState(false);
+  const [unitToDelete, setUnitToDelete] = useState<CompetencyUnit | null>(null);
+
 
   const pageSize = 10;
 
@@ -85,6 +87,29 @@ export const useCompetencyUnits = () => {
     }
   };
 
+  const handleDeleteConfirmation = (unitCode: string) => {
+    const unit = allCompetencyUnits.find(u => u.unitCode === unitCode);
+    if (unit) {
+      setUnitToDelete(unit);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (unitToDelete) {
+      try {
+        await deleteCompetencyUnit(unitToDelete.unitCode);
+        setAllCompetencyUnits(prev => prev.filter(unit => unit.unitCode !== unitToDelete.unitCode));
+        setUnitToDelete(null);
+      } catch (err) {
+        setError("Failed to delete competency unit");
+      }
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setUnitToDelete(null);
+  };
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
   };
@@ -133,5 +158,9 @@ export const useCompetencyUnits = () => {
     setViewCompetencyUnit,
     setCurrentCompetencyUnit,
     searchQuery,
+    unitToDelete,
+    handleDeleteConfirmation,
+    handleConfirmDelete,
+    handleCancelDelete,
   };
 };

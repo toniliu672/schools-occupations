@@ -10,7 +10,8 @@ import {
   Notification,
   Loading,
   Pagination,
-  SearchBarNoButton
+  SearchBarNoButton,
+  Modal,
 } from "@/components";
 import {
   CompetencyUnitDetailModal,
@@ -41,6 +42,10 @@ const CompetencyUnitManagementPage = () => {
     setError,
     setViewCompetencyUnit,
     setCurrentCompetencyUnit,
+    unitToDelete,
+    handleDeleteConfirmation,
+    handleConfirmDelete,
+    handleCancelDelete,
   } = useCompetencyUnits();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -73,7 +78,7 @@ const CompetencyUnitManagementPage = () => {
           handleEdit(unitCode);
           setModalOpen(true);
         }}
-        onDelete={handleDeleteCompetencyUnit}
+        onDelete={handleDeleteConfirmation}
         onView={(unitCode) => {
           handleView(unitCode);
           setIsDetailModalOpen(true);
@@ -118,6 +123,21 @@ const CompetencyUnitManagementPage = () => {
           isLoading={isLoadingDetail}
         />
       )}
+      <Modal
+        isOpen={!!unitToDelete}
+        onClose={handleCancelDelete}
+        title="Confirm Deletion"
+      >
+        <p>Are you sure you want to delete the competency unit: {unitToDelete?.name}?</p>
+        <div className="mt-4 flex justify-end space-x-2">
+          <Button onClick={handleCancelDelete} variant="outline">Cancel</Button>
+          <Button onClick={() => {
+            if (unitToDelete) {
+              handleConfirmDelete();
+            }
+          }} variant="primary">Delete</Button>
+        </div>
+      </Modal>
     </div>
   );
 };

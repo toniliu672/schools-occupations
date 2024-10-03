@@ -6,7 +6,7 @@ import { Column } from '@/types/components';
 interface CompetencyUnitTableProps {
   competencyUnits: CompetencyUnit[];
   onEdit: (unitCode: string) => void;
-  onDelete: (unitCode: string) => Promise<void>;
+  onDelete: (unitCode: string) => void;
   onView: (unitCode: string) => void;
   currentPage: number;
   pageSize: number;
@@ -20,7 +20,9 @@ const CompetencyUnitTable: React.FC<CompetencyUnitTableProps> = ({
   onDelete, 
   onView, 
   currentPage, 
-  pageSize 
+  pageSize,
+  isViewLoading,
+  isEditLoading
 }) => {
   const { theme } = useTheme();
 
@@ -46,10 +48,10 @@ const CompetencyUnitTable: React.FC<CompetencyUnitTableProps> = ({
       accessor: 'unitCode',
       cell: (value: string) => (
         <div className="space-x-2">
-          <Button onClick={() => onView(value)} variant="primary" size="small">
+          <Button onClick={() => onView(value)} variant="primary" size="small" disabled={isViewLoading}>
             View
           </Button>
-          <Button onClick={() => onEdit(value)} variant="secondary" size="small">
+          <Button onClick={() => onEdit(value)} variant="secondary" size="small" disabled={isEditLoading}>
             Edit
           </Button>
           <Button onClick={() => onDelete(value)} variant="outline" size="small">
