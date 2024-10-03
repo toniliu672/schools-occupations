@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
         take: pageSize,
         where: search ? {
           OR: [
-            { id: { contains: search, mode: 'insensitive' } },
+            { unitCode: { contains: search, mode: 'insensitive' } },
             { name: { contains: search, mode: 'insensitive' } },
           ],
         } : undefined,
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
       prisma.competencyUnit.count(search ? {
         where: {
           OR: [
-            { id: { contains: search, mode: 'insensitive' } },
+            { unitCode: { contains: search, mode: 'insensitive' } },
             { name: { contains: search, mode: 'insensitive' } },
           ],
         },
@@ -59,10 +59,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData: CompetencyUnitInput = CompetencyUnitSchema.parse(body);
     
-    const { name, occupations } = validatedData;
+    const { unitCode, name, occupations } = validatedData;
     
     const newCompetencyUnit = await prisma.competencyUnit.create({
       data: {
+        unitCode,
         name,
         occupations: occupations ? {
           connect: occupations.map(({ code }) => ({ code }))
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest) {
     }
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
-        return errorResponse('A competency unit with this name already exists', 400);
+        return errorResponse('A competency unit with this unit code already exists', 400);
       }
     }
     return errorResponse('Failed to create competency unit', 500);

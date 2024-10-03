@@ -2,7 +2,13 @@ import { Prisma } from '@prisma/client';
 
 // School types
 export type School = Prisma.SchoolGetPayload<{
-  include: { occupations: true }
+  include: { 
+    occupations: {
+      include: {
+        competencyUnits: true
+      }
+    }
+  }
 }>;
 
 export type SchoolInput = Omit<
@@ -25,7 +31,10 @@ export type Occupation = Prisma.OccupationGetPayload<{
   include: { schools: true; competencyUnits: true }
 }>;
 
-export type OccupationInput = Omit<Prisma.OccupationCreateInput, 'schools' | 'competencyUnits'>;
+export type OccupationInput = Omit<Prisma.OccupationCreateInput, 'schools' | 'competencyUnits'> & {
+  competencyUnits: string[]; 
+};
+
 export type OccupationUpdate = Partial<OccupationInput> & {
   code: string;
 };
@@ -35,9 +44,12 @@ export type CompetencyUnit = Prisma.CompetencyUnitGetPayload<{
   include: { occupations: true }
 }>;
 
-export type CompetencyUnitInput = Omit<Prisma.CompetencyUnitCreateInput, 'occupations'>;
-export type CompetencyUnitUpdate = Partial<CompetencyUnitInput> & {
-  id: string;
+export type CompetencyUnitInput = Omit<Prisma.CompetencyUnitCreateInput, 'occupations'> & {
+  occupations?: { code: string }[];
+};
+
+export type CompetencyUnitUpdate = Partial<Omit<CompetencyUnitInput, 'unitCode'>> & {
+  unitCode: string;
 };
 
 // API Response types

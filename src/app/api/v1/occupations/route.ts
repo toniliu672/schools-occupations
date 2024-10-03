@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
         include: {
           competencyUnits: {
             select: {
-              id: true,
+              unitCode: true,
               name: true,
             }
           },
@@ -59,8 +59,42 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData: OccupationInput = OccupationSchema.parse(body);
     
+    const { code, name, competencyUnits } = validatedData;
+    
+    // Buat array untuk menyimpan unit kompetensi yang akan dihubungkan
+    const competencyUnitsToConnect: { unitCode: string }[] = [];
+    
+    // Jika ada unit kompetensi, proses masing-masing
+    if (competencyUnits && competencyUnits.length > 0) {
+      for (const unitCode of competencyUnits) {
+        // Cek apakah unit kompetensi sudah ada
+        let existingUnit = await prisma.competencyUnit.findUnique({
+          where: { unitCode },
+        });
+
+        // Jika belum ada, buat unit kompetensi baru
+        if (!existingUnit) {
+          existingUnit = await prisma.competencyUnit.create({
+            data: {
+              unitCode,
+              name: unitCode, // Gunakan unitCode sebagai nama jika tidak ada nama yang disediakan
+            },
+          });
+        }
+
+        // Tambahkan ke array untuk dihubungkan
+        competencyUnitsToConnect.push({ unitCode: existingUnit.unitCode });
+      }
+    }
+
     const newOccupation = await prisma.occupation.create({
-      data: validatedData,
+      data: {
+        code,
+        name,
+        competencyUnits: {
+          connect: competencyUnitsToConnect
+        }
+      },
       include: { schools: true, competencyUnits: true },
     });
     

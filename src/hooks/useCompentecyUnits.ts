@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { CompetencyUnit, CompetencyUnitInput, CompetencyUnitUpdate } from "@/types/api";
 import {
   getCompetencyUnits,
-  getCompetencyUnitById,
+  getCompetencyUnitById, 
   createCompetencyUnit,
   updateCompetencyUnit,
   deleteCompetencyUnit,
@@ -38,14 +38,13 @@ export const useCompetencyUnits = () => {
 
   const filteredCompetencyUnits = useMemo(() => {
     return allCompetencyUnits.filter(unit => 
-      unit.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      unit.name.toLowerCase().includes(searchQuery.toLowerCase())
+      (unit.unitCode?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+      (unit.name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
     );
   }, [allCompetencyUnits, searchQuery]);
 
   const totalPages = Math.ceil(filteredCompetencyUnits.length / pageSize);
 
-  // Ensure page is within valid range
   useEffect(() => {
     if (page > totalPages && totalPages > 0) {
       setPage(totalPages);
@@ -66,19 +65,19 @@ export const useCompetencyUnits = () => {
     }
   };
 
-  const handleUpdateCompetencyUnit = async (id: string, unitData: CompetencyUnitUpdate) => {
+  const handleUpdateCompetencyUnit = async (unitCode: string, unitData: CompetencyUnitUpdate) => {
     try {
-      const updatedUnit = await updateCompetencyUnit(id, unitData);
-      setAllCompetencyUnits(prev => prev.map(unit => unit.id === id ? updatedUnit : unit));
+      const updatedUnit = await updateCompetencyUnit(unitCode, unitData);
+      setAllCompetencyUnits(prev => prev.map(unit => unit.unitCode === unitCode ? updatedUnit : unit));
     } catch (err) {
       setError("Failed to update competency unit");
     }
   };
 
-  const handleDeleteCompetencyUnit = async (id: string) => {
+  const handleDeleteCompetencyUnit = async (unitCode: string) => {
     try {
-      await deleteCompetencyUnit(id);
-      setAllCompetencyUnits(prev => prev.filter(unit => unit.id !== id));
+      await deleteCompetencyUnit(unitCode);
+      setAllCompetencyUnits(prev => prev.filter(unit => unit.unitCode !== unitCode));
     } catch (err) {
       setError("Failed to delete competency unit");
     }
@@ -86,13 +85,12 @@ export const useCompetencyUnits = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    // Don't reset page here
   };
 
-  const handleView = async (id: string) => {
+  const handleView = async (unitCode: string) => {
     try {
       setIsLoadingDetail(true);
-      const unit = await getCompetencyUnitById(id);
+      const unit = await getCompetencyUnitById(unitCode); 
       setViewCompetencyUnit(unit);
     } catch (error) {
       console.error('Failed to fetch competency unit details:', error);
@@ -102,8 +100,8 @@ export const useCompetencyUnits = () => {
     }
   };
 
-  const handleEdit = (id: string) => {
-    const unit = allCompetencyUnits.find((u) => u.id === id);
+  const handleEdit = (unitCode: string) => {
+    const unit = allCompetencyUnits.find((u) => u.unitCode === unitCode);
     if (unit) {
       setCurrentCompetencyUnit(unit);
     }

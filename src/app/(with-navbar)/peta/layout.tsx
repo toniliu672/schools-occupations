@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FadeIn, Sidebar, Loading } from "@/components";
+import React from 'react';
 
 export default function PetaLayout({
   children,

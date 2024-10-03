@@ -13,6 +13,8 @@ model User {
   email    String @unique
   password String
   role     Role   @default(USER)
+
+  @@map("users")
 }
 
 enum Role {
@@ -36,14 +38,18 @@ model School {
 }
 
 model Occupation {
-  code              String            @id
-  name              String            @unique
-  schools           School[]
-  competencyUnits   CompetencyUnit[]
+  code            String            @id
+  name            String            @unique
+  schools         School[]
+  competencyUnits CompetencyUnit[]
+
+  @@map("occupations")
 }
 
 model CompetencyUnit {
-  id           String       @id @default(uuid())
-  name         String
-  occupations  Occupation[]
+  unitCode    String       @id
+  name        String
+  occupations Occupation[]
+
+  @@map("competency_units")
 }

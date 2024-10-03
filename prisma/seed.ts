@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Role } from '@prisma/client'
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient()
@@ -14,57 +14,69 @@ async function main() {
       email: 'admin@example.com',
       username: 'admin',
       password: hashedPassword,
-      role: 'ADMIN',
+      role: Role.ADMIN,
     },
   })
 
   console.log({ admin })
 
   // Seed CompetencyUnits
-  const reading = await prisma.competencyUnit.create({
-    data: {
-      name: 'membaca',
+  const reading = await prisma.competencyUnit.upsert({
+    where: { unitCode: 'READ001' },
+    update: {},
+    create: {
+      unitCode: 'READ001',
+      name: 'Membaca',
     },
   })
 
-  const counting = await prisma.competencyUnit.create({
-    data: {
-      name: 'berhitung',
+  const counting = await prisma.competencyUnit.upsert({
+    where: { unitCode: 'COUNT001' },
+    update: {},
+    create: {
+      unitCode: 'COUNT001',
+      name: 'Berhitung',
     },
   })
 
   // Seed Occupations
-  const language = await prisma.occupation.create({
-    data: {
+  const language = await prisma.occupation.upsert({
+    where: { code: '1111' },
+    update: {},
+    create: {
       code: '1111',
       name: 'Bahasa',
       competencyUnits: {
-        connect: { id: reading.id },
+        connect: { unitCode: reading.unitCode },
       },
     },
   })
 
-  const math = await prisma.occupation.create({
-    data: {
+  const math = await prisma.occupation.upsert({
+    where: { code: '2222' },
+    update: {},
+    create: {
       code: '2222',
       name: 'Matematika',
       competencyUnits: {
-        connect: { id: counting.id },
+        connect: { unitCode: counting.unitCode },
       },
     },
   })
 
   // Seed School
-  const school = await prisma.school.create({
-    data: {
+  const school = await prisma.school.upsert({
+    where: { name: 'SMKN 1 Tondano' },
+    update: {},
+    create: {
       name: 'SMKN 1 Tondano',
       city: 'Tondano',
-      address: 'Jl. Tondano',
-      description: 'Sekolah Kejuruan Tondano',
-      studentCount: 100,
-      graduateCount: 80,
-      graduatePercent: 80,
-      externalLinks: ['Link 1', 'Link 2'],
+      address: 'Jl. Raya Tondano',
+      description: 'Sekolah Menengah Kejuruan Negeri 1 Tondano',
+      studentCount: 1000,
+      graduateCount: 250,
+      graduatePercent: 25,
+      externalLinks: ['https://smkn1tondano.sch.id', 'https://facebook.com/smkn1tondano'],
       occupations: {
         connect: [
           { code: language.code },

@@ -22,7 +22,18 @@ export async function GET(request: NextRequest) {
             { city: { contains: search, mode: 'insensitive' } },
           ],
         } : undefined,
-        include: { occupations: true },
+        include: {
+          occupations: {
+            include: {
+              competencyUnits: {
+                select: {
+                  unitCode: true,
+                  name: true
+                }
+              }
+            }
+          }
+        },
       }),
       prisma.school.count(search ? {
         where: {
@@ -34,8 +45,28 @@ export async function GET(request: NextRequest) {
       } : undefined),
     ]);
 
+    const formattedSchools = schools.map(school => ({
+      id: school.id,
+      name: school.name,
+      city: school.city,
+      address: school.address,
+      description: school.description,
+      studentCount: school.studentCount,
+      graduateCount: school.graduateCount,
+      graduatePercent: school.graduatePercent,
+      externalLinks: school.externalLinks,
+      occupations: school.occupations.map(occupation => ({
+        code: occupation.code,
+        name: occupation.name,
+        competencyUnits: occupation.competencyUnits.map(unit => ({
+          unitCode: unit.unitCode,
+          name: unit.name
+        }))
+      }))
+    }));
+
     return successResponse({
-      items: schools,
+      items: formattedSchools,
       total,
       page,
       pageSize,

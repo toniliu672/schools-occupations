@@ -49,10 +49,21 @@ const SchoolDetailModal: React.FC<SchoolDetailModalProps> = ({ isOpen, onClose, 
           
           {school.occupations && school.occupations.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold">Occupations:</h3>
-              <ul className="list-disc pl-5">
+              <h3 className="text-lg font-semibold">Occupations and Competency Units:</h3>
+              <ul className="list-none pl-5">
                 {school.occupations.map(occ => (
-                  <li key={occ.code}>{occ.name} (Code: {occ.code})</li>
+                  <li key={occ.code} className="mb-4">
+                    <p className="font-medium">{occ.name} (Code: {occ.code})</p>
+                    {occ.competencyUnits && occ.competencyUnits.length > 0 ? (
+                      <ul className="list-disc pl-5 mt-2">
+                        {occ.competencyUnits.map(unit => (
+                          <li key={unit.unitCode}>{unit.name} (Unit Code: {unit.unitCode})</li> // Changed from 'id' to 'unitCode'
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-gray-500 mt-1">No competency units available</p>
+                    )}
+                  </li>
                 ))}
               </ul>
             </div>

@@ -17,7 +17,7 @@ export async function GET(
       include: {
         competencyUnits: {
           select: {
-            id: true,
+            unitCode: true,
             name: true,
           }
         },
@@ -28,13 +28,7 @@ export async function GET(
       return errorResponse('Occupation not found', 404);
     }
 
-    const formattedOccupation = {
-      code: occupation.code,
-      name: occupation.name,
-      competencyUnits: occupation.competencyUnits,
-    };
-
-    return successResponse(formattedOccupation);
+    return successResponse(occupation);
   } catch (error) {
     console.error('Error in GET /occupations/[code]:', error);
     return errorResponse('Failed to fetch occupation data', 500);
@@ -50,12 +44,16 @@ export async function PUT(
     const body = await request.json();
     const validatedData: OccupationUpdate = OccupationUpdateSchema.parse(body);
 
-    const { name } = validatedData;
+    const { name, competencyUnits } = validatedData;
 
     const updatedOccupation = await prisma.occupation.update({
       where: { code },
       data: {
         name: name || undefined,
+        competencyUnits: competencyUnits ? {
+          set: [], // Remove all existing connections
+          connect: competencyUnits.map(unitCode => ({ unitCode })) // Connect new competency units
+        } : undefined,
       },
       include: { schools: true, competencyUnits: true },
     });
