@@ -7,13 +7,13 @@ import { Prisma } from '@prisma/client';
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { unitCode: string } }
 ) {
   try {
-    const { id } = params;
+    const { unitCode } = params;
 
     const competencyUnit = await prisma.competencyUnit.findUnique({
-      where: { id },
+      where: { unitCode },
       include: {
         occupations: {
           select: {
@@ -30,24 +30,24 @@ export async function GET(
 
     return successResponse(competencyUnit);
   } catch (error) {
-    console.error('Error in GET /competencyUnits/[id]:', error);
+    console.error('Error in GET /competencyUnits/[unitCode]:', error);
     return errorResponse('Failed to fetch competency unit data', 500);
   }
 }
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { unitCode: string } }
 ) {
   try {
-    const { id } = params;
+    const { unitCode } = params;
     const body = await request.json();
     const validatedData: CompetencyUnitUpdate = CompetencyUnitUpdateSchema.parse(body);
 
     const { name, occupations } = validatedData;
 
     const updatedCompetencyUnit = await prisma.competencyUnit.update({
-      where: { id },
+      where: { unitCode },
       data: {
         name: name || undefined,
         occupations: occupations ? {
@@ -67,7 +67,7 @@ export async function PUT(
 
     return successResponse(updatedCompetencyUnit);
   } catch (error) {
-    console.error('Error in PUT /competencyUnits/[id]:', error);
+    console.error('Error in PUT /competencyUnits/[unitCode]:', error);
     if (error instanceof z.ZodError) {
       return errorResponse(error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', '), 400);
     }
@@ -85,14 +85,14 @@ export async function PUT(
 
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { unitCode: string } }
 ) {
   try {
-    const { id } = params;
-    await prisma.competencyUnit.delete({ where: { id } });
+    const { unitCode } = params;
+    await prisma.competencyUnit.delete({ where: { unitCode } });
     return successResponse({ message: 'Competency unit successfully deleted' });
   } catch (error) {
-    console.error('Error in DELETE /competencyUnits/[id]:', error);
+    console.error('Error in DELETE /competencyUnits/[unitCode]:', error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2025') {
         return errorResponse('Competency unit not found', 404);

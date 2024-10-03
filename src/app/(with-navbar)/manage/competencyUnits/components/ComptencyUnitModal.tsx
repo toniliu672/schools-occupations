@@ -3,11 +3,11 @@ import { Modal } from '@/components';
 import CompetencyUnitForm from './ComptencyUnitForm';
 
 interface CompetencyUnitModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    competencyUnit: CompetencyUnit | null;
-    onSubmit: (data: CompetencyUnitInput | CompetencyUnitUpdate) => void;
-  }
+  isOpen: boolean;
+  onClose: () => void;
+  competencyUnit: CompetencyUnit | null;
+  onSubmit: (data: CompetencyUnitInput | CompetencyUnitUpdate) => void;
+}
 
 const CompetencyUnitModal: React.FC<CompetencyUnitModalProps> = ({ 
   isOpen, 

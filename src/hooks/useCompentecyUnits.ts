@@ -17,6 +17,8 @@ export const useCompetencyUnits = () => {
   const [viewCompetencyUnit, setViewCompetencyUnit] = useState<CompetencyUnit | null>(null);
   const [currentCompetencyUnit, setCurrentCompetencyUnit] = useState<CompetencyUnit | null>(null);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+  const [isViewLoading, setIsViewLoading] = useState(false);
+  const [isEditLoading, setIsEditLoading] = useState(false);
 
   const pageSize = 10;
 
@@ -89,22 +91,24 @@ export const useCompetencyUnits = () => {
 
   const handleView = async (unitCode: string) => {
     try {
-      setIsLoadingDetail(true);
+      setIsViewLoading(true);
       const unit = await getCompetencyUnitById(unitCode); 
       setViewCompetencyUnit(unit);
     } catch (error) {
       console.error('Failed to fetch competency unit details:', error);
       setError('Failed to fetch competency unit details');
     } finally {
-      setIsLoadingDetail(false);
+      setIsViewLoading(false);
     }
   };
 
   const handleEdit = (unitCode: string) => {
+    setIsEditLoading(true);
     const unit = allCompetencyUnits.find((u) => u.unitCode === unitCode);
     if (unit) {
       setCurrentCompetencyUnit(unit);
     }
+    setIsEditLoading(false);
   };
 
   return {
@@ -117,6 +121,8 @@ export const useCompetencyUnits = () => {
     viewCompetencyUnit,
     currentCompetencyUnit,
     isLoadingDetail,
+    isViewLoading,
+    isEditLoading,
     handleCreateCompetencyUnit,
     handleUpdateCompetencyUnit,
     handleDeleteCompetencyUnit,

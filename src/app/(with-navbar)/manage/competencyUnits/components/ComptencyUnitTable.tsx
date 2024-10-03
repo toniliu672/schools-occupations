@@ -5,9 +5,9 @@ import { Column } from '@/types/components';
 
 interface CompetencyUnitTableProps {
   competencyUnits: CompetencyUnit[];
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => Promise<void>;
-  onView: (id: string) => void;
+  onEdit: (unitCode: string) => void;
+  onDelete: (unitCode: string) => Promise<void>;
+  onView: (unitCode: string) => void;
   currentPage: number;
   pageSize: number;
   isViewLoading: boolean;  
@@ -34,7 +34,7 @@ const CompetencyUnitTable: React.FC<CompetencyUnitTableProps> = ({
         return globalIndex;
       }
     },
-    // { header: 'ID', accessor: 'id' },
+    { header: 'Unit Code', accessor: 'unitCode' },
     { header: 'Name', accessor: 'name' },
     { 
       header: 'Occupations', 
@@ -43,7 +43,7 @@ const CompetencyUnitTable: React.FC<CompetencyUnitTableProps> = ({
     },
     {
       header: 'Actions',
-      accessor: 'id',
+      accessor: 'unitCode',
       cell: (value: string) => (
         <div className="space-x-2">
           <Button onClick={() => onView(value)} variant="primary" size="small">

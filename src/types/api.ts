@@ -48,9 +48,11 @@ export type CompetencyUnitInput = Omit<Prisma.CompetencyUnitCreateInput, 'occupa
   occupations?: { code: string }[];
 };
 
-export type CompetencyUnitUpdate = Partial<Omit<CompetencyUnitInput, 'unitCode'>> & {
+export type CompetencyUnitUpdate = Partial<Omit<Prisma.CompetencyUnitUpdateInput, 'unitCode' | 'occupations'>> & {
   unitCode: string;
+  occupations?: { code: string }[];
 };
+
 
 // API Response types
 export interface ApiResponse<T> {
@@ -76,4 +78,5 @@ export interface ListQueryParams {
 
 export type SchoolListParams = ListQueryParams;
 export type OccupationListParams = ListQueryParams;
-export type CompetencyUnitListParams = ListQueryParams;
+// export type CompetencyUnitListParams = ListQueryParams;
+export interface CompetencyUnitListParams extends ListQueryParams {}

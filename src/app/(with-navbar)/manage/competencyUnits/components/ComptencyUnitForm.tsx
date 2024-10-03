@@ -14,12 +14,14 @@ const CompetencyUnitForm: React.FC<CompetencyUnitFormProps> = ({
   onCancel 
 }) => {
   const [formData, setFormData] = useState<CompetencyUnitInput>({
+    unitCode: '',
     name: '',
   });
 
   useEffect(() => {
     if (competencyUnit) {
       setFormData({
+        unitCode: competencyUnit.unitCode,
         name: competencyUnit.name,
       });
     }
@@ -37,6 +39,14 @@ const CompetencyUnitForm: React.FC<CompetencyUnitFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <TextInput
+        label="Unit Code"
+        name="unitCode"
+        value={formData.unitCode}
+        onChange={handleChange}
+        required
+        disabled={!!competencyUnit} // Disable editing of unitCode for existing competency units
+      />
       <TextInput
         label="Name"
         name="name"

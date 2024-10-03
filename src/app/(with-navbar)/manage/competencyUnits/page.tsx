@@ -10,8 +10,13 @@ import {
   Notification,
   Loading,
   Pagination,
-  SearchBarNoButton} from "@/components";
-import {CompetencyUnitDetailModal, CompetencyUnitModal, CompetencyUnitTable, } from "./components"
+  SearchBarNoButton
+} from "@/components";
+import {
+  CompetencyUnitDetailModal,
+  CompetencyUnitModal,
+  CompetencyUnitTable,
+} from "./components";
 import { useCompetencyUnits } from "@/hooks/useCompentecyUnits";
 
 const CompetencyUnitManagementPage = () => {
@@ -64,13 +69,13 @@ const CompetencyUnitManagementPage = () => {
       )}
       <CompetencyUnitTable
         competencyUnits={competencyUnits}
-        onEdit={(id) => {
-          handleEdit(id);
+        onEdit={(unitCode) => {
+          handleEdit(unitCode);
           setModalOpen(true);
         }}
         onDelete={handleDeleteCompetencyUnit}
-        onView={(id) => {
-          handleView(id);
+        onView={(unitCode) => {
+          handleView(unitCode);
           setIsDetailModalOpen(true);
         }}
         currentPage={page}
@@ -93,7 +98,7 @@ const CompetencyUnitManagementPage = () => {
         onSubmit={(data: CompetencyUnitInput | CompetencyUnitUpdate) => {
           if (currentCompetencyUnit) {
             handleUpdateCompetencyUnit(
-              currentCompetencyUnit.id,
+              currentCompetencyUnit.unitCode,
               data as CompetencyUnitUpdate
             );
           } else {
@@ -104,8 +109,8 @@ const CompetencyUnitManagementPage = () => {
       />
       {viewCompetencyUnit && (
         <CompetencyUnitDetailModal
-        isOpen={isDetailModalOpen}
-        onClose={() => {
+          isOpen={isDetailModalOpen}
+          onClose={() => {
             setIsDetailModalOpen(false);
             setViewCompetencyUnit(null);
           }}

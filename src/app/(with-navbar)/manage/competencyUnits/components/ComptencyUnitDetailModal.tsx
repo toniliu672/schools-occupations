@@ -2,18 +2,18 @@ import { Modal, Loading } from '@/components';
 import { CompetencyUnit } from '@/types/api';
 
 interface CompetencyUnitDetailModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    competencyUnit: CompetencyUnit;
-    isLoading: boolean;
-  }
-  
-  const CompetencyUnitDetailModal: React.FC<CompetencyUnitDetailModalProps> = ({ 
-    isOpen, 
-    onClose, 
-    competencyUnit, 
-    isLoading 
-  }) => {
+  isOpen: boolean;
+  onClose: () => void;
+  competencyUnit: CompetencyUnit;
+  isLoading: boolean;
+}
+
+const CompetencyUnitDetailModal: React.FC<CompetencyUnitDetailModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  competencyUnit, 
+  isLoading 
+}) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Competency Unit Details">
       {isLoading ? (
@@ -22,8 +22,8 @@ interface CompetencyUnitDetailModalProps {
         </div>
       ) : (
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold">Nama Kompetensi : {competencyUnit.name}</h2>
-          {/* <p><strong>ID:</strong> {competencyUnit.id}</p> */}
+          <h2 className="text-2xl font-bold">Nama Kompetensi: {competencyUnit.name}</h2>
+          <p><strong>Unit Code:</strong> {competencyUnit.unitCode}</p>
           
           {competencyUnit.occupations && competencyUnit.occupations.length > 0 && (
             <div>

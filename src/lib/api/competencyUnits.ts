@@ -12,8 +12,8 @@ export async function getCompetencyUnits(params: CompetencyUnitListParams = {}):
   return data.data;
 }
 
-export async function getCompetencyUnitById(id: string): Promise<CompetencyUnit> {
-  const response = await fetch(`${API_URL}/${id}`);
+export async function getCompetencyUnitById(unitCode: string): Promise<CompetencyUnit> {
+  const response = await fetch(`${API_URL}/${unitCode}`);
   if (!response.ok) {
     throw new Error('Failed to fetch competency unit details');
   }
@@ -36,8 +36,8 @@ export async function createCompetencyUnit(unitData: CompetencyUnitInput): Promi
   return data.data;
 }
 
-export async function updateCompetencyUnit(id: string, unitData: CompetencyUnitUpdate): Promise<CompetencyUnit> {
-  const response = await fetch(`${API_URL}/${id}`, {
+export async function updateCompetencyUnit(unitCode: string, unitData: CompetencyUnitUpdate): Promise<CompetencyUnit> {
+  const response = await fetch(`${API_URL}/${unitCode}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -51,8 +51,8 @@ export async function updateCompetencyUnit(id: string, unitData: CompetencyUnitU
   return data.data;
 }
 
-export async function deleteCompetencyUnit(id: string): Promise<void> {
-  const response = await fetch(`${API_URL}/${id}`, {
+export async function deleteCompetencyUnit(unitCode: string): Promise<void> {
+  const response = await fetch(`${API_URL}/${unitCode}`, {
     method: 'DELETE',
   });
   if (!response.ok) {
