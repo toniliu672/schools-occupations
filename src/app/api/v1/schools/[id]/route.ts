@@ -1,12 +1,14 @@
+// src/app/api/v1/schools/[id]/route.ts
 import { NextRequest } from "next/server";
 import { SchoolUpdate, SchoolUpdateSchema } from "@/schemas/school";
 import { prisma } from "@/config/prisma";
 import { successResponse, errorResponse } from "@/utils/apiResponse";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
+import { withAuth } from "@/utils/authUtils";
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -28,10 +30,10 @@ export async function GET(
   }
 }
 
-export async function PUT(
+export const PUT = withAuth(async (
   request: NextRequest,
   { params }: { params: { id: string } }
-) {
+) => {
   try {
     const { id } = params;
     if (!id) {
@@ -139,12 +141,12 @@ export async function PUT(
     }
     return errorResponse("Failed to update school data", 500);
   }
-}
+})
 
-export async function DELETE(
-  request: NextRequest,
+export const DELETE = withAuth(async (
+  _request: NextRequest,
   { params }: { params: { id: string } }
-) {
+) => {
   try {
     const { id } = params;
     await prisma.school.delete({ where: { id } });
@@ -158,4 +160,4 @@ export async function DELETE(
     }
     return errorResponse("Failed to delete school", 500);
   }
-}
+})

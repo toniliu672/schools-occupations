@@ -1,9 +1,11 @@
+// src/app/api/v1/competencyUnits/route.ts
 import { NextRequest } from 'next/server';
 import { CompetencyUnitSchema, CompetencyUnitInput } from '@/schemas/competencyUnit';
 import { prisma } from '@/config/prisma';
 import { successResponse, errorResponse } from '@/utils/apiResponse';
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
+import { withAuth } from '@/utils/authUtils';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -54,7 +56,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export const POST = withAuth(async (request: NextRequest) => {
   try {
     const body = await request.json();
     const validatedData: CompetencyUnitInput = CompetencyUnitSchema.parse(body);
@@ -85,4 +87,4 @@ export async function POST(request: NextRequest) {
     }
     return errorResponse('Failed to create competency unit', 500);
   }
-}
+})

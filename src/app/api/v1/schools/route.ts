@@ -1,9 +1,11 @@
+// src/app/api/v1/schools/route.ts
 import { NextRequest } from 'next/server';
 import { SchoolSchema, SchoolInput } from '@/schemas/school';
 import { prisma } from '@/config/prisma';
 import { successResponse, errorResponse } from '@/utils/apiResponse';
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
+import { withAuth } from '@/utils/authUtils';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -78,7 +80,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export const POST = withAuth(async (request: NextRequest) => {
   try {
     const body = await request.json();
     console.log('Received body:', body);
@@ -138,4 +140,4 @@ export async function POST(request: NextRequest) {
     }
     return errorResponse('Gagal membuat data sekolah', 500);
   }
-}
+})

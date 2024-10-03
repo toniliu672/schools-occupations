@@ -1,9 +1,11 @@
+// src/app/api/v1/occupations/[code]/route.ts
 import { NextRequest } from 'next/server';
 import { OccupationUpdateSchema, OccupationUpdate } from '@/schemas/occupation';
 import { prisma } from '@/config/prisma';
 import { successResponse, errorResponse } from '@/utils/apiResponse';
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
+import { withAuth } from '@/utils/authUtils';
 
 export async function GET(
   request: NextRequest,
@@ -35,10 +37,10 @@ export async function GET(
   }
 }
 
-export async function PUT(
+export const PUT = withAuth(async (
   request: NextRequest,
   { params }: { params: { code: string } }
-) {
+) => {
   try {
     const { code } = params;
     const body = await request.json();
@@ -74,12 +76,12 @@ export async function PUT(
     }
     return errorResponse('Failed to update occupation data', 500);
   }
-}
+})
 
-export async function DELETE(
-  request: NextRequest,
+export const DELETE = withAuth(async (
+  _request: NextRequest,
   { params }: { params: { code: string } }
-) {
+) => {
   try {
     const { code } = params;
     await prisma.occupation.delete({ where: { code } });
@@ -93,4 +95,4 @@ export async function DELETE(
     }
     return errorResponse('Failed to delete occupation', 500);
   }
-}
+})

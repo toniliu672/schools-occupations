@@ -1,17 +1,15 @@
+// src/app/api/v1/users/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
 import bcrypt from 'bcryptjs';
+import { withAdminAuth } from '@/utils/authUtils';
 
 const prisma = new PrismaClient();
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 403 });
-  }
-
+export const PUT = withAdminAuth(async (
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) => {
   const id = Number(params.id);
 
   try {
@@ -35,14 +33,12 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     console.error('Error updating user:', error);
     return NextResponse.json({ message: 'Error updating user' }, { status: 500 });
   }
-}
+});
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 403 });
-  }
-
+export const DELETE = withAdminAuth(async (
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) => {
   const id = Number(params.id);
 
   try {
@@ -55,4 +51,4 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     console.error('Error deleting user:', error);
     return NextResponse.json({ message: 'Error deleting user' }, { status: 500 });
   }
-}
+});

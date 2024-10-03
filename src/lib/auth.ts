@@ -36,31 +36,28 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    session: ({ session, token }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: token.id as string,
-        role: token.role as string,
-      },
-    }),
-    jwt: ({ token, user }) => {
+    session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
+      }
+      return session;
+    },
+    jwt({ token, user }) {
       if (user) {
-        return {
-          ...token,
-          id: user.id,
-          role: user.role,
-        };
+        token.id = user.id;
+        token.role = user.role;
       }
       return token;
     },
   },
   pages: {
     signIn: "/login",
-    signOut: '/login'
+    signOut: "/login"
   },
   session: {
     strategy: "jwt",
+    maxAge: 24 * 60 * 60, // 24 hours
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

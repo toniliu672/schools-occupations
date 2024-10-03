@@ -1,9 +1,11 @@
+// src/app/api/v1/competencyUnits/[unitCode]/route.ts
 import { NextRequest } from 'next/server';
 import { CompetencyUnitUpdateSchema, CompetencyUnitUpdate } from '@/schemas/competencyUnit';
 import { prisma } from '@/config/prisma';
 import { successResponse, errorResponse } from '@/utils/apiResponse';
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
+import { withAuth } from '@/utils/authUtils';
 
 export async function GET(
   _request: NextRequest,
@@ -35,10 +37,10 @@ export async function GET(
   }
 }
 
-export async function PUT(
+export const PUT = withAuth(async (
   request: NextRequest,
   { params }: { params: { unitCode: string } }
-) {
+) => {
   try {
     const { unitCode } = params;
     const body = await request.json();
@@ -81,12 +83,12 @@ export async function PUT(
     }
     return errorResponse('Failed to update competency unit data', 500);
   }
-}
+})
 
-export async function DELETE(
-  _request: NextRequest,
+export const DELETE = withAuth(async (
+  request: NextRequest,
   { params }: { params: { unitCode: string } }
-) {
+) => {
   try {
     const { unitCode } = params;
     await prisma.competencyUnit.delete({ where: { unitCode } });
@@ -100,4 +102,4 @@ export async function DELETE(
     }
     return errorResponse('Failed to delete competency unit', 500);
   }
-}
+})
