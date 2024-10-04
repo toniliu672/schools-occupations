@@ -36,8 +36,8 @@ export async function createOccupation(occupationData: OccupationInput): Promise
   return data.data;
 }
 
-export async function updateOccupation(code: string, occupationData: OccupationUpdate): Promise<Occupation> {
-  const response = await fetch(`${API_URL}/${code}`, {
+export async function updateOccupation(oldCode: string, occupationData: OccupationUpdate): Promise<Occupation> {
+  const response = await fetch(`${API_URL}/${oldCode}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

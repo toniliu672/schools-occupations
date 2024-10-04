@@ -66,10 +66,10 @@ export const useOccupations = () => {
     }
   };
 
-  const handleUpdateOccupation = async (code: string, occupationData: OccupationUpdate) => {
+  const handleUpdateOccupation = async (oldCode: string, occupationData: OccupationUpdate) => {
     try {
-      const updatedOccupation = await updateOccupation(code, occupationData);
-      setAllOccupations(prev => prev.map(occ => occ.code === code ? updatedOccupation : occ));
+      const updatedOccupation = await updateOccupation(oldCode, occupationData);
+      setAllOccupations(prev => prev.map(occ => occ.code === oldCode ? updatedOccupation : occ));
     } catch (err) {
       setError("Failed to update occupation");
     }

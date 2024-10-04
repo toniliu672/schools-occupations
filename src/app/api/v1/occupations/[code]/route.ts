@@ -42,15 +42,17 @@ export const PUT = withAuth(async (
   { params }: { params: { code: string } }
 ) => {
   try {
-    const { code } = params;
+    const { code: oldCode } = params;
     const body = await request.json();
     const validatedData: OccupationUpdate = OccupationUpdateSchema.parse(body);
 
-    const { name, competencyUnits } = validatedData;
+    const { code: newCode, name, competencyUnits } = validatedData;
 
+    // Jika kode berubah, gunakan prisma.update dengan where oldCode dan data newCode
     const updatedOccupation = await prisma.occupation.update({
-      where: { code },
+      where: { code: oldCode },
       data: {
+        code: newCode || oldCode, // Gunakan kode baru jika ada, jika tidak gunakan kode lama
         name: name || undefined,
         competencyUnits: competencyUnits ? {
           set: [], // Remove all existing connections

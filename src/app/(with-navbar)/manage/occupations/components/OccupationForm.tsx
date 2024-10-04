@@ -41,9 +41,12 @@ const OccupationForm: React.FC<OccupationFormProps> = ({ occupation, onSubmit, o
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit({
+      code: formData.code,
+      name: formData.name,
+      competencyUnits: formData.competencyUnits,
+    });
   };
-
   const handleCompetencyUnitChange = (selectedUnits: string[]) => {
     setFormData(prev => ({
       ...prev,
@@ -82,7 +85,7 @@ const OccupationForm: React.FC<OccupationFormProps> = ({ occupation, onSubmit, o
         value={formData.code}
         onChange={handleChange}
         required
-        disabled={!!occupation}
+        // disabled={!!occupation}
       />
       <TextInput
         label="Name"
